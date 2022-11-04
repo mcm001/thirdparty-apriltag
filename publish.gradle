@@ -11,13 +11,13 @@ publishing {
     }
 }
 
-def releaseNumber = 3
+def releaseNumber = 1
 
 def pubVersion = "1.11.0-$releaseNumber"
 
-def baseArtifactId = 'googletest'
+def baseArtifactId = 'apriltag'
 def artifactGroupId = 'edu.wpi.first.thirdparty.frc2023'
-def zipBaseName = '_GROUP_edu_wpi_first_thirdparty_frc2023_ID_googletest_CLS'
+def zipBaseName = '_GROUP_edu_wpi_first_thirdparty_frc2023_ID_apriltag_CLS'
 
 def outputsFolder = file("$project.buildDir/outputs")
 
@@ -52,15 +52,9 @@ task cppSourcesZip(type: Zip) {
         into '/'
     }
 
-    from('googletest/googletest/src') {
-        exclude '**/*-all.cc'
-        exclude '**/*_main.cc'
-        into '/'
-    }
-
-    from('googletest/googlemock/src') {
-        exclude '**/*-all.cc'
-        exclude '**/*_main.cc'
+    from('apriltag/') {
+        include "*.h"
+        include "*.c"
         into '/'
     }
 }
@@ -74,12 +68,9 @@ task cppHeadersZip(type: Zip) {
         into '/'
     }
 
-    from('googletest/googletest/include') {
+    from('apriltag/') {
         into '/'
-    }
-
-    from('googletest/googlemock/include') {
-        into '/'
+        include "*.h"
     }
 }
 
@@ -91,7 +82,7 @@ addTaskToCopyAllOutputs(cppSourcesZip)
 
 model {
     publishing {
-        def gTaskList = createComponentZipTasks($.components, ['googletest'], zipBaseName, Zip, project, includeStandardZipFormat)
+        def gTaskList = createComponentZipTasks($.components, ['apriltag'], zipBaseName, Zip, project, includeStandardZipFormat)
         publications {
             cpp(MavenPublication) {
                 gTaskList.each {

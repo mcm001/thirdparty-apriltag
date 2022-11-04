@@ -1,5 +1,5 @@
 plugins {
-    id 'cpp'
+    id 'c'
     id 'visual-studio'
     id 'edu.wpi.first.NativeUtils' version '2023.3.0'
 }
@@ -28,24 +28,25 @@ ext.addTaskToCopyAllOutputs = { task ->
 
 model {
     components {
-        googletest(NativeLibrarySpec) {
+        apriltag(NativeLibrarySpec) {
             sources {
-                cpp {
+                c {
                     source {
-                        srcDirs 'googletest/googletest/src', 'googletest/googlemock/src'
-                        exclude '**/*-all.cc', '**/*_main.cc'
+                        srcDirs 'apriltag'
+                        include '**/*.c'
+                        exclude 'apriltag_pywrap.c'
                     }
                     exportedHeaders {
-                        srcDirs 'googletest/googletest/include', 'googletest/googlemock/include',
-                                'googletest/googletest', 'googletest/googlemock'
+                        srcDirs 'apriltag'
+                        include '**/*.h'
                     }
                 }
             }
             binaries.all {
                 if (toolChain in VisualCpp) {
-                    cppCompiler.args '-D_UNICODE', '-DUNICODE', '-DWIN32',  '-D_WIN32', '-DSTRICT', '-DWIN32_LEAN_AND_MEAN', '-D_HAS_EXCEPTIONS=1'
+                    // cCompiler.args '-D_UNICODE', '-DUNICODE', '-DWIN32',  '-D_WIN32', '-DSTRICT', '-DWIN32_LEAN_AND_MEAN', '-D_HAS_EXCEPTIONS=1'
                 } else {
-                    cppCompiler.args '-Wshadow', '-fexceptions', '-Wno-missing-field-initializers'
+                    cCompiler.args '-w', '-fsyntax-only', "-Wno-error=format-truncation"
                 }
             }
             binaries.withType(SharedLibraryBinarySpec) {
